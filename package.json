@@ -1,0 +1,12 @@
+{
+  "name": "ecommerce-microservices",
+  "version": "1.0.0",
+  "description": "E-Commerce Microservices Architecture - IT4020 Assignment 2",
+  "scripts": {
+    "start": "concurrently --kill-others-on-fail -n \"PRODUCT,CUSTOMER,ORDER,PAYMENT,GATEWAY\" -c \"cyan,green,yellow,magenta,blue\" \"cd product-service && npm start\" \"cd customer-service && npm start\" \"cd order-service && npm start\" \"cd payment-service && npm start\" \"cd api-gateway && npm start\"",
+    "install:all": "cd product-service && npm install && cd ../customer-service && npm install && cd ../order-service && npm install && cd ../payment-service && npm install && cd ../api-gateway && npm install"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
