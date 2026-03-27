@@ -15,7 +15,7 @@ app.use(morgan('combined'));
 app.use(express.json());
 
 // ─────────────────────────────────────────────
-// Service Registry
+// Service Registry for all services
 // ─────────────────────────────────────────────
 const SERVICES = {
   product:  { url: 'http://localhost:3001', prefix: '/products' },
