@@ -1,42 +1,62 @@
-const ProductModel = require('../models/productModel');
+const Product = require('../models/productModel');
 
 const ProductController = {
-  getAllProducts: (req, res) => {
-    const products = ProductModel.getAll();
-    res.json({ success: true, count: products.length, data: products });
+  getAllProducts: async (req, res) => {
+    try {
+      const products = await Product.find();
+      res.json({ success: true, count: products.length, data: products });
+    } catch (err) {
+      res.status(500).json({ success: false, message: 'Server error', error: err.message });
+    }
   },
 
-  getProductById: (req, res) => {
-    const product = ProductModel.getById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+  getProductById: async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id);
+      if (!product) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+      res.json({ success: true, data: product });
+    } catch (err) {
+      res.status(500).json({ success: false, message: 'Server error', error: err.message });
     }
-    res.json({ success: true, data: product });
   },
 
-  createProduct: (req, res) => {
-    const { name, description, price, category, stock } = req.body;
-    if (!name || !price) {
-      return res.status(400).json({ success: false, message: 'Name and price are required' });
+  createProduct: async (req, res) => {
+    try {
+      const { name, description, price, category, stock } = req.body;
+      if (!name || !price) {
+        return res.status(400).json({ success: false, message: 'Name and price are required' });
+      }
+      const product = await Product.create({ name, description, price, category, stock: stock || 0 });
+      res.status(201).json({ success: true, message: 'Product created', data: product });
+    } catch (err) {
+      res.status(500).json({ success: false, message: 'Server error', error: err.message });
     }
-    const product = ProductModel.create({ name, description, price, category, stock: stock || 0 });
-    res.status(201).json({ success: true, message: 'Product created', data: product });
   },
 
-  updateProduct: (req, res) => {
-    const product = ProductModel.update(req.params.id, req.body);
-    if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+  updateProduct: async (req, res) => {
+    try {
+      const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+      if (!product) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+      res.json({ success: true, message: 'Product updated', data: product });
+    } catch (err) {
+      res.status(500).json({ success: false, message: 'Server error', error: err.message });
     }
-    res.json({ success: true, message: 'Product updated', data: product });
   },
 
-  deleteProduct: (req, res) => {
-    const deleted = ProductModel.delete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+  deleteProduct: async (req, res) => {
+    try {
+      const product = await Product.findByIdAndDelete(req.params.id);
+      if (!product) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+      res.json({ success: true, message: 'Product deleted' });
+    } catch (err) {
+      res.status(500).json({ success: false, message: 'Server error', error: err.message });
     }
-    res.json({ success: true, message: 'Product deleted' });
   },
 };
 

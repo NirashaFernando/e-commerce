@@ -1,64 +1,14 @@
-const { v4: uuidv4 } = require('uuid');
+const mongoose = require('mongoose');
 
-// In-memory data store
-let products = [
+const productSchema = new mongoose.Schema(
   {
-    id: uuidv4(),
-    name: 'Wireless Headphones',
-    description: 'Premium noise-cancelling wireless headphones',
-    price: 149.99,
-    category: 'Electronics',
-    stock: 50,
-    createdAt: new Date().toISOString(),
+    name: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
+    price: { type: Number, required: true, min: 0 },
+    category: { type: String, trim: true },
+    stock: { type: Number, default: 0, min: 0 },
   },
-  {
-    id: uuidv4(),
-    name: 'Running Shoes',
-    description: 'Lightweight and durable running shoes',
-    price: 89.99,
-    category: 'Footwear',
-    stock: 120,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: uuidv4(),
-    name: 'Coffee Maker',
-    description: 'Automatic drip coffee maker with 12-cup capacity',
-    price: 59.99,
-    category: 'Kitchen',
-    stock: 35,
-    createdAt: new Date().toISOString(),
-  },
-];
+  { timestamps: true }
+);
 
-const ProductModel = {
-  getAll: () => products,
-
-  getById: (id) => products.find((p) => p.id === id),
-
-  create: (data) => {
-    const product = {
-      id: uuidv4(),
-      ...data,
-      createdAt: new Date().toISOString(),
-    };
-    products.push(product);
-    return product;
-  },
-
-  update: (id, data) => {
-    const index = products.findIndex((p) => p.id === id);
-    if (index === -1) return null;
-    products[index] = { ...products[index], ...data, updatedAt: new Date().toISOString() };
-    return products[index];
-  },
-
-  delete: (id) => {
-    const index = products.findIndex((p) => p.id === id);
-    if (index === -1) return false;
-    products.splice(index, 1);
-    return true;
-  },
-};
-
-module.exports = ProductModel;
+module.exports = mongoose.model('Product', productSchema);
