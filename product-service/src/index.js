@@ -30,10 +30,10 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Routes
+
 app.use('/products', productRoutes);
 
-// Health check
+
 app.get('/health', (req, res) => {
   res.json({
     service: 'Product Service',
@@ -43,7 +43,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Connect to MongoDB then start server
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
