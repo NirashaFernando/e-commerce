@@ -143,4 +143,40 @@ router.put('/:id', ProductController.updateProduct);
  */
 router.delete('/:id', ProductController.deleteProduct);
 
+/**
+ * @swagger
+ * /products/{id}/stock:
+ *   patch:
+ *     summary: Reduce product stock (internal — used by Order Service)
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - quantity
+ *             properties:
+ *               quantity:
+ *                 type: integer
+ *                 example: 2
+ *                 description: Number of units to deduct from stock
+ *     responses:
+ *       200:
+ *         description: Stock reduced successfully
+ *       409:
+ *         description: Insufficient stock
+ *       404:
+ *         description: Product not found
+ */
+router.patch('/:id/stock', ProductController.reduceStock);
+
 module.exports = router;
