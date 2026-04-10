@@ -7,16 +7,12 @@ const swaggerUi = require('swagger-ui-express');
 const app = express();
 const PORT = 3000;
 
-// ─────────────────────────────────────────────
-// Middleware
-// ─────────────────────────────────────────────
+
 app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json());
 
-// ─────────────────────────────────────────────
-// Service Registry for all services
-// ─────────────────────────────────────────────
+
 const SERVICES = {
   product:  { url: 'http://localhost:3001', prefix: '/products' },
   customer: { url: 'http://localhost:3002', prefix: '/customers' },
@@ -24,17 +20,12 @@ const SERVICES = {
   payment:  { url: 'http://localhost:3004', prefix: '/payments' },
 };
 
-// ─────────────────────────────────────────────
-// Request Logger Middleware
-// ─────────────────────────────────────────────
+
 app.use((req, res, next) => {
   console.log(`[API Gateway] ${new Date().toISOString()} → ${req.method} ${req.path}`);
   next();
 });
 
-// ─────────────────────────────────────────────
-// Proxy Routes - All services through ONE port
-// ─────────────────────────────────────────────
 app.use(
   '/api/products',
   createProxyMiddleware({
@@ -91,9 +82,6 @@ app.use(
   })
 );
 
-// ─────────────────────────────────────────────
-// Gateway-level Swagger Docs
-// ─────────────────────────────────────────────
 const gatewaySwaggerDoc = {
   openapi: '3.0.0',
   info: {
@@ -169,9 +157,7 @@ All services are accessible without needing to know individual service ports.
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(gatewaySwaggerDoc));
 
-// ─────────────────────────────────────────────
-// Health Check & Service Status
-// ─────────────────────────────────────────────
+
 app.get('/health', (req, res) => {
   res.json({
     service: 'API Gateway',
@@ -201,9 +187,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// ─────────────────────────────────────────────
-// 404 Handler
-// ─────────────────────────────────────────────
+
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.path} not found on gateway` });
 });

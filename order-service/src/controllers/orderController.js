@@ -44,7 +44,7 @@ const OrderController = {
         return res.status(400).json({ success: false, message: 'customerId and items array are required' });
       }
 
-      // ── Step 1: Validate stock for ALL items before creating the order ──────
+      //  Step 1: Validate stock for ALL items before creating the order 
       const stockErrors = [];
 
       for (const item of items) {
@@ -94,15 +94,14 @@ const OrderController = {
         });
       }
 
-      // ── Step 2: Create the order ─────────────────────────────────────────────
+      // Step 2: Create the order
       const totalAmount = parseFloat(
         items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0).toFixed(2)
       );
       const order = await Order.create({ customerId, items, totalAmount, shippingAddress });
 
-      // ── Step 3: Deduct stock from product-service for each item ──────────────
-      // We do this after the order is saved. If deduction fails for some item
-      // we still return the order but flag the warning (order is already committed).
+      // Step 3: Deduct stock from product-service for each item 
+      
       const stockDeductErrors = [];
 
       for (const item of items) {
